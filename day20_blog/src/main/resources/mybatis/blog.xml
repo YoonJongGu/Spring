@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.itbank.repository.BlogDAO">
+
+	
+	<insert id="insertBlog" parameterType="blog">
+		insert into blog 
+			(text)
+		values 
+			(#{text})
+	</insert>
+	
+	<select id="selectLastIdx" resultType="int">
+		select max(idx) from blog
+	</select>
+	
+	<insert id="insertUploadImage" parameterType="hashmap">
+		insert into uploadImage
+			(blog_idx, oldName, newName)
+		values
+			(#{blog_idx}, #{oldName}, #{newName})
+	</insert>
+	
+	<select id="getBlog" resultType="hashmap">
+	select distinct
+	    B.idx, B.text, 
+	    (select newName from UploadImage where blog_idx = B.idx fetch first rows only) as thumbnail
+	        from blog B
+	    join UploadImage U
+	        on B.idx = U.blog_idx 
+	    order by idx desc
+	    offset #{offset} rows 
+	    fetch first 5 rows only
+	</select>
+	
+	<select id="getImages" resultType="string" parameterType="int">
+		select newName from uploadImage where blog_idx = #{idx}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
