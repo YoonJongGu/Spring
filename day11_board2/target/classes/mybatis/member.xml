@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.itbank.repository.MemberDAO">
+	<select id="selectList" resultType="member">
+		select * from member5 order by idx
+	</select>
+	
+	<insert id="insert" parameterType="member">
+		insert into member5 values(
+			member5_seq.nextval,
+			#{userid},
+			#{userpw},
+			#{username},
+			#{birth},
+			#{gender}
+		)
+	</insert>
+	
+	<select id="login" parameterType="hashmap" resultType="member">
+		select * from member5 where userid=#{userid} and userpw =#{userpw}
+	</select>
+	
+	<select id="selectOne" parameterType="int" resultType="member">
+		select * from member5 where idx=#{idx}
+	</select>
+	
+	<update id="update" parameterType="member">
+		update member5 set
+			userpw=#{userpw},
+			username=#{username},
+			birth=#{birth},
+			gender=#{gender}		
+		where idx=#{idx}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete member5 where idx=#{idx}
+	</delete>
+	
+	<select id="selectUseridCount" parameterType="string" resultType="int">
+		select count(*) from member5 where userid=#{inputId}
+	</select>
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.itbank.repository.BoardDAO">
+	<select id="selectList" parameterType="paging" resultType="board">
+		select * from board2 order by idx desc
+		offset #{offset} rows		
+    	fetch first #{perPage} rows only
+	</select>
+	
+	<insert id="insert" parameterType="board">
+		insert into board2 values(
+			board2_seq.nextval,
+			#{title},
+			#{writer},
+			#{content},
+			sysdate,
+			#{ipaddr},
+			0,
+			#{uploadFileName}
+		)
+	</insert>
+	
+	<select id="selectOne" parameterType="int" resultType="board">
+		select * from board2 where idx=#{idx}
+	</select>
+	
+	<update id="plusCount" parameterType="int">
+		update board2 set viewCount = viewCount + 1 where idx=#{idx}
+	</update>
+	
+	<update id="update" parameterType="board">
+		update board2
+		<set>
+			<if test="title != null">
+				title=#{title},
+			</if>
+			<if test="content != null">
+				content=#{content},
+			</if>
+			<if test="uploadFileName != null">
+				uploadFileName=#{uploadFileName},
+			</if>
+		</set>
+		where idx=#{idx}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete board2 where idx=#{idx}	
+	</delete>
+	
+	<select id="selectCount" resultType="int">
+		select count(*) from board2 
+	</select>
+	
+	<select id="selectCountByKeyword" parameterType="string" resultType="int">
+		select count(*) from board2 where title like '%${keyword}%'
+	</select>
+	
+	<select id="selectListByKeyword" parameterType="map" resultType="board">
+		select * from board2
+		where title like '%${keyword}%'
+		order by idx desc
+		offset #{paging.offset} rows		
+    	fetch first #{paging.perPage} rows only
+	</select>	
+	
+	<select id="selectReply" parameterType="int" resultType="reply">
+		select * from reply
+		where reply_board=#{idx}
+	</select>
+	
+	<insert id="insert_reply" parameterType="reply">
+		insert into reply values (
+			reply_seq.nextval,
+			#{reply_writer},
+			#{reply_board},
+			#{content}
+		)		
+	</insert>
+</mapper>
